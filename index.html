@@ -33,7 +33,7 @@
         .button-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 20px;  
         }
 
         .button {
@@ -53,16 +53,118 @@
         .abmelden {
             background-color: #999999;
         }
+
+        .apptive-embed {
+            opacity: 0;
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translate(-50%, 0%);
+            max-width: 450px;
+            z-index: -1;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #666;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .back-button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
+    <button class="back-button" id="backButton" onclick="resetPage()">Zurück</button>
+
+    <div id="welcomeContent">
+
     <img src="https://www.plukon.de/wp-content/uploads/sites/13/2018/05/Plukon_Logo_RGB_2018-2.png" alt="Plukon Food Group Logo" class="logo">
-    <h1>Herzlich Willkommen</h1>
-    <p class="message">Bitte melden Sie sich an. Sie werden im Anschluss hier abgeholt.</p>
-    <div class="button-container">
-        <a href="#" class="button anmelden">Anmelden</a>
-        <a href="#" class="button abmelden">Abmelden</a>
+
+    <!-- Welcome content that should be hidden when forms are shown -->
+        <h1>Herzlich Willkommen</h1>
+        <p class="message">Bitte melden Sie sich an. Sie werden im Anschluss hier abgeholt.</p>
+        <div class="button-container">
+            <a href="#" class="button anmelden" id="showAnmelden">Anmelden</a>
+            <a href="#" class="button abmelden" id="showAbmelden">Abmelden</a>
+        </div>
     </div>
+
+    <!-- Anmelden Form -->
+    <iframe 
+        id="anmeldenForm"
+        class="apptive-embed apptive-dynamic-height" 
+        src="https://app.apptivegrid.de/api/r/673703cd7e1959e475e329d7/673bb09ad56f13fe9ee3966e/BDOmRVrRfuAzfyGa0wxRMv2DuNlyDXroDleJYZ0r4gAmhfO4oMt?embedded=true" 
+        frameborder="0" 
+        onmousewheel="" 
+        height="533px"
+        width="100%" 
+        >
+    </iframe>
+
+    <!-- Abmelden Form -->
+    <iframe 
+        id="abmeldenForm"
+        class="apptive-embed apptive-dynamic-height" 
+        src="https://app.apptivegrid.de/api/r/673703cd7e1959e475e329d7/673bb721d56f13ca99e396e6/BDOmRVrRfuAzfyGa0wxRMv2DuNlyDXroDleJYZ0r4gAmhfO4oMt?embedded=true" 
+        frameborder="0" 
+        onmousewheel="" 
+        height="533px"
+        width="100%" 
+        >
+    </iframe>
+
+    <script src="https://app.apptivegrid.de/apptive-embedded.js"></script>
+
+    <script>
+        let resetTimer;
+
+        function resetPage() {
+            document.getElementById('welcomeContent').style.display = 'block';
+            document.getElementById('anmeldenForm').style.opacity = '0';
+            document.getElementById('abmeldenForm').style.opacity = '0';
+            document.getElementById('backButton').style.display = 'none';
+            clearTimeout(resetTimer);
+        }
+
+        function startResetTimer() {
+            // Clear any existing timer
+            clearTimeout(resetTimer);
+            // Set new timer for 30 seconds (30000 milliseconds)
+            resetTimer = setTimeout(resetPage, 30000);
+        }
+
+        document.getElementById('showAnmelden').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('welcomeContent').style.display = 'none';
+            document.getElementById('anmeldenForm').style.opacity = '1';
+            document.getElementById('abmeldenForm').style.opacity = '0';
+            document.getElementById('backButton').style.display = 'block';
+            startResetTimer();
+        });
+
+        document.getElementById('showAbmelden').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('welcomeContent').style.display = 'none';
+            document.getElementById('abmeldenForm').style.opacity = '1';
+            document.getElementById('anmeldenForm').style.opacity = '0';
+            document.getElementById('backButton').style.display = 'block';            
+            startResetTimer();
+
+        });
+
+        // Reset timer when user interacts with the forms
+        document.getElementById('anmeldenForm').addEventListener('mousemove', startResetTimer);
+        document.getElementById('abmeldenForm').addEventListener('mousemove', startResetTimer);
+    </script>
 </body>
 </html>
 
