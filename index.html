@@ -54,14 +54,15 @@
             background-color: #999999;
         }
 
+
         .apptive-embed {
-            opacity: 0;
             position: absolute;
             top: 50px;
             left: 50%;
             transform: translate(-50%, 0%);
-            max-width: 450px;
-            z-index: -1;
+            min-width: 320px;
+            max-width: 580px;
+            width: 100%;
         }
 
         .back-button {
@@ -98,72 +99,65 @@
         </div>
     </div>
 
-    <!-- Anmelden Form -->
-    <iframe 
-        id="anmeldenForm"
-        class="apptive-embed apptive-dynamic-height" 
-        src="https://app.apptivegrid.de/api/r/673703cd7e1959e475e329d7/673bb09ad56f13fe9ee3966e/BDOmRVrRfuAzfyGa0wxRMv2DuNlyDXroDleJYZ0r4gAmhfO4oMt?embedded=true" 
-        frameborder="0" 
-        onmousewheel="" 
-        height="533px"
-        width="100%" 
-        >
-    </iframe>
-
-    <!-- Abmelden Form -->
-    <iframe 
-        id="abmeldenForm"
-        class="apptive-embed apptive-dynamic-height" 
-        src="https://app.apptivegrid.de/api/r/673703cd7e1959e475e329d7/673bb721d56f13ca99e396e6/BDOmRVrRfuAzfyGa0wxRMv2DuNlyDXroDleJYZ0r4gAmhfO4oMt?embedded=true" 
-        frameborder="0" 
-        onmousewheel="" 
-        height="533px"
-        width="100%" 
-        >
-    </iframe>
+        <iframe 
+            id="formFrame"
+            class="apptive-embed apptive-dynamic-height" 
+            src="about:blank"
+            frameborder="0" 
+            
+            onmousewheel="">
+        </iframe>
 
     <script src="https://app.apptivegrid.de/apptive-embedded.js"></script>
 
     <script>
         let resetTimer;
+        const ANMELDEN_URL = "https://app.apptivegrid.de/api/r/673703cd7e1959e475e329d7/673bb09ad56f13fe9ee3966e/BDOmRVrRfuAzfyGa0wxRMv2DuNlyDXroDleJYZ0r4gAmhfO4oMt?embedded=true";
+        const ABMELDEN_URL = "https://app.apptivegrid.de/api/r/673703cd7e1959e475e329d7/673bb721d56f13ca99e396e6/BDOmRVrRfuAzfyGa0wxRMv2DuNlyDXroDleJYZ0r4gAmhfO4oMt?embedded=true";
+
+        function loadForm(url) {
+            const iframe = document.getElementById('formFrame');
+            
+            iframe.src = 'about:blank';
+            setTimeout(() => {
+                iframe.src = url;
+            }, 100);
+
+            document.getElementById('welcomeContent').style.display = 'none';
+            document.getElementById('backButton').style.display = 'block';
+            document.getElementById('formFrame').style.display = 'block';
+
+            startResetTimer();
+        }
 
         function resetPage() {
             document.getElementById('welcomeContent').style.display = 'block';
-            document.getElementById('anmeldenForm').style.opacity = '0';
-            document.getElementById('abmeldenForm').style.opacity = '0';
             document.getElementById('backButton').style.display = 'none';
-            clearTimeout(resetTimer);
-        }
+            
+            // Reset iframe
+            document.getElementById('formFrame').src = 'about:blank';
+            document.getElementById('formFrame').style.display = 'none';
 
-        function startResetTimer() {
-            // Clear any existing timer
             clearTimeout(resetTimer);
-            // Set new timer for 30 seconds (30000 milliseconds)
-            resetTimer = setTimeout(resetPage, 30000);
         }
 
         document.getElementById('showAnmelden').addEventListener('click', function(e) {
             e.preventDefault();
-            document.getElementById('welcomeContent').style.display = 'none';
-            document.getElementById('anmeldenForm').style.opacity = '1';
-            document.getElementById('abmeldenForm').style.opacity = '0';
-            document.getElementById('backButton').style.display = 'block';
-            startResetTimer();
+            loadForm(ANMELDEN_URL);
         });
 
         document.getElementById('showAbmelden').addEventListener('click', function(e) {
             e.preventDefault();
-            document.getElementById('welcomeContent').style.display = 'none';
-            document.getElementById('abmeldenForm').style.opacity = '1';
-            document.getElementById('anmeldenForm').style.opacity = '0';
-            document.getElementById('backButton').style.display = 'block';            
-            startResetTimer();
-
+            loadForm(ABMELDEN_URL);
         });
 
-        // Reset timer when user interacts with the forms
-        document.getElementById('anmeldenForm').addEventListener('mousemove', startResetTimer);
-        document.getElementById('abmeldenForm').addEventListener('mousemove', startResetTimer);
+        function startResetTimer() {
+            clearTimeout(resetTimer);
+            resetTimer = setTimeout(resetPage, 30000);
+        }
+
+        // Add mousemove listener to container
+        document.querySelector('body').addEventListener('mousemove', startResetTimer);
     </script>
 </body>
 </html>
